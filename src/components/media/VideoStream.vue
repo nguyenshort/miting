@@ -2,7 +2,7 @@
   <div
       :id="'video-stream-' + user.uid"
       ref="el"
-      class="relative stream relative rounded overflow-hidden"
+      class="relative stream relative rounded overflow-hidden bg-slate-900"
       :class="{
         _exist: isVisible
       }"
@@ -23,8 +23,18 @@
           'border-transparent': volume?.level <= 5 || !volume,
         }"
     ></div>
+
+    <div class="absolute w-full h-full z-10 flex items-center justify-center">
+      <auto-avatar name="N"/>
+    </div>
 <!--    <img class="w-1/2 h-auto rounded-full rounded-fullabsolute" src="https://picsum.photos/200" alt="" />-->
-    <div ref="video" class="videos-stream absolute w-full h-full z-10"></div>
+    <div
+        ref="video"
+        class="videos-stream absolute w-full h-full z-10"
+        :class="{
+          'opacity-0': !hasVideo,
+        }"
+    ></div>
   </div>
 <!--  <div v-for="index in 30" :key="index" class="bg-slate-900 rounded overflow-hidden aspect-1 flex items-center justify-center">-->
 <!--    <img class="w-1/2 h-auto rounded-full" src="https://picsum.photos/200" alt="" />-->
@@ -33,11 +43,12 @@
 
 <script lang="ts" setup>
 
-import {IAgoraRTCRemoteUser} from "agora-rtc-sdk-ng";
+import {IAgoraRTCRemoteUser, IRemoteVideoTrack} from "agora-rtc-sdk-ng";
 import {computed, inject, nextTick, onMounted, ref, watch} from "vue";
 import {useElementVisibility} from "@vueuse/core"
 import {IRomSpeaker, IUseAgora} from "../../composables/useAgora";
 import SpeakingSpinner from "./SpeakingSpinner.vue";
+import AutoAvatar from "../AutoAvatar.vue";
 
 const { speakers } = inject<IUseAgora>('ROOM_PROVIDER')!
 
@@ -55,6 +66,10 @@ watch(() => props.user, ({ videoTrack, audioTrack }) => {
     videoTrack?.play(video.value!)
   })
 })
+watch(() => props.user.videoTrack, (audioTrack) => {
+  const trask = audioTrack as (IRemoteVideoTrack & Record<any, any>)
+  hasVideo.value = !trask.muted && trask.enabled
+}, { deep: true })
 
 onMounted(() => nextTick(() => {
   props.user.videoTrack?.play(video.value!)

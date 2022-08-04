@@ -75,7 +75,7 @@ watch(() => roomStore.isOpenToolbar, (isOpen) => {
   }
 }, { immediate: true })
 
-const { users, localData, speakers, usersData } = inject<IUseAgora>('ROOM_PROVIDER')!
+const { users, localData, speakers, usersData, client } = inject<IUseAgora>('ROOM_PROVIDER')!
 
 const localRemove = computed(() => {
   return {
