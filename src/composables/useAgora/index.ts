@@ -1,6 +1,6 @@
 import {inject, reactive, UnwrapNestedRefs} from "vue";
 import {AGORA_CONSTANT} from "../../plugins/rtc";
-import agora, {IAgoraRTCClient, IAgoraRTCRemoteUser, ILocalTrack, UID} from "agora-rtc-sdk-ng"
+import {IAgoraRTCClient, IAgoraRTCRemoteUser, ILocalTrack, UID} from "agora-rtc-sdk-ng"
 
 export interface IRomSpeaker {
     uid: UID
@@ -71,10 +71,10 @@ export const useAgora = () => {
     const initUserMedia = async () => {
 
         if(!localData.audioTrack) {
-            localData.audioTrack = await agora.createMicrophoneAudioTrack()
+            localData.audioTrack = await window.AgoraRTC.createMicrophoneAudioTrack()
         }
         if(!localData.videoTrack) {
-            localData.videoTrack = await agora.createCameraVideoTrack()
+            localData.videoTrack = await window.AgoraRTC.createCameraVideoTrack()
         }
     }
 
