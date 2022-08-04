@@ -6,7 +6,7 @@
     "dev": "vite",
     "build": "NODE_OPTIONS=--max-old-space-size=8192 vite build",
     "preview": "vite preview",
-    "stop": "pm2 stop ppe-room"
+    "stop": "pm2 stop miting"
   },
   "dependencies": {
     "@nguyenshort/vue-lottie": "^1.0.0",
