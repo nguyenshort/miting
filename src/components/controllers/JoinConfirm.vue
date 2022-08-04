@@ -96,8 +96,8 @@
 </template>
 
 <script lang="ts" setup>
-import {computed, inject, nextTick, onMounted, reactive, ref} from 'vue'
-import { useDevicesList } from '@vueuse/core'
+import {computed, inject, nextTick, onMounted, ref} from 'vue'
+import {useDevicesList} from '@vueuse/core'
 import {RoomStatus, useRoomStore} from "../../stores/room";
 import {IUseAgora} from "../../composables/useAgora";
 const currentCamera = ref<string>()
@@ -109,7 +109,7 @@ const { videoInputs: cameras } = useDevicesList({
   },
 })
 
-const { initUserMedia, localData, join, unpublishListener, publishedListener, leftListener, volumesListener } = inject<IUseAgora>('ROOM_PROVIDER')!
+const { initUserMedia, localData, join, unpublishListener, publishedListener, leftListener, volumesListener, client } = inject<IUseAgora>('ROOM_PROVIDER')!
 
 const roomStore = useRoomStore()
 
