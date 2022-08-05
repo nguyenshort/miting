@@ -116,7 +116,7 @@ export const useAgora = () => {
 
     const unPublishedHandle = async (user: IAgoraRTCRemoteUser, mediaType: "audio" | "video") => {
         console.log(`${user.uid} unpublished ${mediaType}`)
-        await client.unsubscribe(user, mediaType)
+        // await client.unsubscribe(user, mediaType)
 
         await upsertTracks(user, mediaType)
 
