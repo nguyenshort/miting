@@ -26,7 +26,7 @@
 
     <div class="absolute w-full h-full z-10 flex items-center justify-center">
       <auto-avatar
-          :name="name"
+          name="N"
           :class="{
               _talking: volume?.level > 5
           }"
@@ -87,21 +87,6 @@ watch(isVisible, (exist) => {
 const volume = computed<IRomSpeaker|boolean>(() => {
   const _index =  speakers?.findIndex(({ uid }) => uid === props.user.uid)
   return speakers[_index]
-})
-
-const makeid = (length: number) => {
-  let result = '';
-  const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
-  const charactersLength = characters.length;
-  for (let i = 0; i < length; i++ ) {
-    result += characters.charAt(Math.floor(Math.random() *
-        charactersLength));
-  }
-  return result;
-}
-
-const name = computed(() => {
-  return makeid(1)
 })
 
 </script>
