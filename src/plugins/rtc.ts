@@ -6,7 +6,7 @@ export const AGORA_CONSTANT = Symbol.for('agora')
 const plugin = {
     install(app: App) {
 
-        const client = window.AgoraRTC.createClient({
+        const client = agora.createClient({
             codec: 'h264',
             mode: 'rtc'
         })
