@@ -25,7 +25,7 @@
     ></div>
 
     <div class="absolute w-full h-full z-10 flex items-center justify-center">
-      <auto-avatar name="N"/>
+      <auto-avatar :name="makeid(1)"/>
     </div>
     <div
         ref="video"
@@ -83,5 +83,16 @@ const volume = computed<IRomSpeaker|boolean>(() => {
   const _index =  speakers?.findIndex(({ uid }) => uid === props.user.uid)
   return speakers[_index]
 })
+
+const makeid = (length: number) => {
+  let result = '';
+  const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+  const charactersLength = characters.length;
+  for (let i = 0; i < length; i++ ) {
+    result += characters.charAt(Math.floor(Math.random() *
+        charactersLength));
+  }
+  return result;
+}
 
 </script>

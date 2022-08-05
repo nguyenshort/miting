@@ -119,6 +119,13 @@ export const useAgora = () => {
         await client.unsubscribe(user, mediaType)
 
         await upsertTracks(user, mediaType)
+
+        if(mediaType === "audio") {
+            const _index = speakers.findIndex(u => u.uid === user.uid)
+            if(_index !== -1) {
+                speakers.splice(_index, 1)
+            }
+        }
     }
     const unpublishListener = () => {
         client.on("user-unpublished", unPublishedHandle)
