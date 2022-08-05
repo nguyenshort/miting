@@ -25,7 +25,12 @@
     ></div>
 
     <div class="absolute w-full h-full z-10 flex items-center justify-center">
-      <auto-avatar :name="makeid(1)"/>
+      <auto-avatar
+          :name="name"
+          :class="{
+              _talking: volume?.level > 5
+          }"
+      />
     </div>
     <div
         ref="video"
@@ -94,5 +99,9 @@ const makeid = (length: number) => {
   }
   return result;
 }
+
+const name = computed(() => {
+  return makeid(1)
+})
 
 </script>

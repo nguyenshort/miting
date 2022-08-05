@@ -11,7 +11,9 @@
     </div>
 
     <span></span>
+<!--
     <span></span>
+-->
   </div>
 
 </template>
@@ -59,8 +61,11 @@ const color = computed(() => {
   }
 }
 
-._auto-avatar._talking > span {
-  animation: auto-avatar-ring 800ms ease-in-out infinite;
+._auto_avatar._talking > span {
+  animation: auto-avatar-ring 600ms ease-in-out infinite;
 }
 
+._auto_avatar._talking > span + span {
+  animation-delay: 400ms;
+}
 </style>
