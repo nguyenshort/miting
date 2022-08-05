@@ -82,8 +82,8 @@ const localRemove = computed(() => {
     uid: localData.uid,
     audioTrack: localData.audioTrack,
     videoTrack: localData.videoTrack,
-    hasAudio: localData.audioTrack?.isPlaying,
-    hasVideo: localData.videoTrack?.isPlaying
+    hasAudio: !localData.audioTrack?.muted,
+    hasVideo: !localData.videoTrack?.muted
   }
 })
 const listUsers = computed(() => {
@@ -172,7 +172,6 @@ onMounted(() => nextTick(() => {
     }
 
   })
-
 }))
 
 </script>

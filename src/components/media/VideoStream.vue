@@ -27,7 +27,6 @@
     <div class="absolute w-full h-full z-10 flex items-center justify-center">
       <auto-avatar name="N"/>
     </div>
-<!--    <img class="w-1/2 h-auto rounded-full rounded-fullabsolute" src="https://picsum.photos/200" alt="" />-->
     <div
         ref="video"
         class="videos-stream absolute w-full h-full z-10"
@@ -36,9 +35,6 @@
         }"
     ></div>
   </div>
-<!--  <div v-for="index in 30" :key="index" class="bg-slate-900 rounded overflow-hidden aspect-1 flex items-center justify-center">-->
-<!--    <img class="w-1/2 h-auto rounded-full" src="https://picsum.photos/200" alt="" />-->
-<!--  </div>-->
 </template>
 
 <script lang="ts" setup>
@@ -56,20 +52,18 @@ const props = defineProps<{
   user: IAgoraRTCRemoteUser,
 }>()
 
-const hasVideo = ref(false)
+const hasVideo = computed(() => {
+  return props.user.hasVideo
+})
 
 const video = ref<HTMLDivElement>()
 const el = ref<HTMLDivElement>()
 
-watch(() => props.user, ({ videoTrack, audioTrack }) => {
+watch(() => props.user, ({ videoTrack }) => {
   nextTick(() => {
     videoTrack?.play(video.value!)
   })
 })
-watch(() => props.user.videoTrack, (audioTrack) => {
-  const trask = audioTrack as (IRemoteVideoTrack & Record<any, any>)
-  hasVideo.value = !trask.muted && trask.enabled
-}, { deep: true })
 
 onMounted(() => nextTick(() => {
   props.user.videoTrack?.play(video.value!)

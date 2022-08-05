@@ -1,6 +1,5 @@
 <template>
 
-
   <div class="h-screen w-full flex items-center justify-center bg-slate-800">
     <div class="overflow-hidden px-5 flex items-center">
 
@@ -75,6 +74,12 @@
           Bạn đã lựa chọn không tham gia cuộc họp.
         </div>
 
+        <div v-if="[cameraPermission, microphonePermission].includes('denied')" class="mt-4 text-white text-xs">
+          Bạn đã từ chối quyền truy cập:
+          <span v-if="microphonePermission === 'denied'">Micro</span>
+          <span v-if="cameraPermission === 'denied'">Camera</span>
+        </div>
+
         <div v-else class="mt-4">
           <div
               v-for="camera of cameras"
@@ -96,10 +101,13 @@
 </template>
 
 <script lang="ts" setup>
-import {computed, inject, nextTick, onMounted, ref} from 'vue'
-import {useDevicesList} from '@vueuse/core'
-import {RoomStatus, useRoomStore} from "../../stores/room";
-import {IUseAgora} from "../../composables/useAgora";
+import {computed, inject, ref, watch} from 'vue'
+import {useDevicesList, usePermission} from '@vueuse/core'
+import {RoomStatus, useRoomStore} from "../../stores/room"
+import {IUseAgora} from "../../composables/useAgora"
+
+const microphonePermission = usePermission('microphone')
+const cameraPermission = usePermission('camera')
 const currentCamera = ref<string>()
 const { videoInputs: cameras } = useDevicesList({
   requestPermissions: true,
@@ -118,17 +126,25 @@ const isCancel = ref(false)
 const chanel = ref('smileeye')
 
 const stream = ref<HTMLDivElement>()
-onMounted(() => nextTick(async () => {
-  await initUserMedia()
-  localData.videoTrack?.play(stream.value)
-}))
+
+watch([microphonePermission, cameraPermission], async ([audio, video], [prevAudio, prevVideo]) => {
+
+
+  if(audio === 'granted') {
+    await initUserMedia().audio()
+  }
+  if(video === 'granted') {
+    await initUserMedia().video()
+    localData.videoTrack?.play(stream.value)
+  }
+
+})
 
 const onJoin = async () => {
   publishedListener()
   unpublishListener()
   leftListener()
   volumesListener()
-
 
   setTimeout(async () => {
     await join('smileeye', Math.round(Math.random() * 1000000 ))

@@ -1,6 +1,13 @@
 import {inject, reactive, UnwrapNestedRefs} from "vue";
 import {AGORA_CONSTANT} from "../../plugins/rtc";
-import agora, {IAgoraRTCClient, IAgoraRTCRemoteUser, ILocalTrack, UID} from "agora-rtc-sdk-ng"
+import agora, {
+    IAgoraRTCClient,
+    IAgoraRTCRemoteUser,
+    ICameraVideoTrack,
+    ILocalTrack,
+    IMicrophoneAudioTrack,
+    UID
+} from "agora-rtc-sdk-ng"
 
 export interface IRomSpeaker {
     uid: UID
@@ -17,14 +24,14 @@ export interface IUseAgora {
     client: IAgoraRTCClient;
     users: Array<IAgoraRTCRemoteUser>;
     usersData: Array<ISmileeyeUser>;
-    speakers: Array<IRomSpeaker>;
     localData: UnwrapNestedRefs<{ uid: string | number | undefined; audioTrack: ILocalTrack | undefined; videoTrack: ILocalTrack | undefined }>;
+    speakers: Array<IRomSpeaker>;
     join: (chanel: string, userID: (string | number)) => Promise<void>;
     publishedListener: () => void;
     unpublishListener: () => void;
-    leftListener: () => void
+    leftListener: () => void;
     volumesListener: () => void;
-    initUserMedia: () => Promise<void>;
+    initUserMedia: () => { audio: () => Promise<IMicrophoneAudioTrack>; video: () => Promise<ICameraVideoTrack> };
 }
 
 export const useAgora = () => {
@@ -50,7 +57,6 @@ export const useAgora = () => {
         await client.join("6bc0bf7f3e364153ba533fd765fb9c60", chanel, null, userID)
 
         localData.uid = userID
-        await initUserMedia()
 
         const _traks = []
 
@@ -61,28 +67,31 @@ export const useAgora = () => {
             _traks.push(localData.videoTrack)
         }
 
-        if(_traks.length > 0) {
-            await client.publish(_traks as ILocalTrack[])
-        }
+        await client.publish(_traks as ILocalTrack[])
 
         upsertUser(userID)
     }
 
-    const initUserMedia = async () => {
+    const initUserMedia = () => {
 
-        if(!localData.audioTrack) {
-            localData.audioTrack = await agora.createMicrophoneAudioTrack()
-        }
-        if(!localData.videoTrack) {
-            localData.videoTrack = await agora.createCameraVideoTrack()
+        return {
+            audio: async () => localData.audioTrack = await agora.createMicrophoneAudioTrack(),
+            video: async () => localData.videoTrack = await agora.createCameraVideoTrack()
         }
     }
 
     const publishedHandle = async (user: IAgoraRTCRemoteUser, mediaType: "audio" | "video") => {
+        console.log(`${user.uid} published ${mediaType}`)
         await client.subscribe(user, mediaType)
-
         upsertUser(user.uid)
+        await upsertTracks(user, mediaType)
+    }
 
+    const publishedListener = () => {
+        client.on("user-published", publishedHandle)
+    }
+
+    const upsertTracks = async (user: IAgoraRTCRemoteUser, mediaType: "audio" | "video") => {
         const _index = users.findIndex(u => u.uid === user.uid)
         if (_index === -1) {
 
@@ -105,12 +114,14 @@ export const useAgora = () => {
         }
     }
 
-    const publishedListener = () => {
-        client.on("user-published", publishedHandle)
-    }
+    const unPublishedHandle = async (user: IAgoraRTCRemoteUser, mediaType: "audio" | "video") => {
+        console.log(`${user.uid} unpublished ${mediaType}`)
+        await client.unsubscribe(user, mediaType)
 
+        await upsertTracks(user, mediaType)
+    }
     const unpublishListener = () => {
-        client.on("user-unpublished", publishedListener)
+        client.on("user-unpublished", unPublishedHandle)
     }
 
     const leftListener = () => {
@@ -145,9 +156,9 @@ export const useAgora = () => {
 
     const volumesListener = () => {
         client.enableAudioVolumeIndicator()
-        client.on("volume-indicator", (volumes) => {
+        client.on("volume-indicator", (volumes: any) => {
 
-            volumes.forEach((volume) => {
+            volumes.forEach((volume: any) => {
                 upsertSpeaker(volume)
             })
 
