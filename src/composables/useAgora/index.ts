@@ -1,6 +1,6 @@
 import {inject, reactive, UnwrapNestedRefs} from "vue";
 import {AGORA_CONSTANT} from "../../plugins/rtc";
-import agora, {
+import type {
     IAgoraRTCClient,
     IAgoraRTCRemoteUser,
     ICameraVideoTrack,
@@ -75,8 +75,8 @@ export const useAgora = () => {
     const initUserMedia = () => {
 
         return {
-            audio: async () => localData.audioTrack = await agora.createMicrophoneAudioTrack(),
-            video: async () => localData.videoTrack = await agora.createCameraVideoTrack()
+            audio: async () => localData.audioTrack = await window.AgoraRTC.createMicrophoneAudioTrack(),
+            video: async () => localData.videoTrack = await window.AgoraRTC.createCameraVideoTrack()
         }
     }
 

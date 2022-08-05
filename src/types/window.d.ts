@@ -1,5 +1,5 @@
 import {App} from "vue";
-import {IAgoraRTC} from "agora-rtc-sdk-ng";
+import type {IAgoraRTC} from "agora-rtc-sdk-ng";
 
 declare global {
     interface Window {
