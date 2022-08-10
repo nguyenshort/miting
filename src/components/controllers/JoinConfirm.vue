@@ -59,7 +59,13 @@
       <div class="w-[350px] flex justify-center items-center flex-col">
 
         <div class="flex">
-          <button class="bg-blue-600 px-4 py-2 rounded-full text-xs text-white font-medium disabled:opacity-60" :disabled="isCancel" @click="onJoin">Tham Gia </button>
+          <button
+              class="bg-blue-600 px-4 py-2 rounded-full text-xs text-white font-medium disabled:opacity-60"
+              :disabled="isCancel || [microphonePermission, cameraPermission].every(x => x === 'denied')"
+              @click="onJoin"
+          >
+            Tham Gia
+          </button>
 
           <div class="w-5"></div>
 
@@ -77,8 +83,13 @@
         <div v-if="[cameraPermission, microphonePermission].includes('denied')" class="mt-4 text-white text-xs">
           Bạn đã từ chối quyền truy cập:
           <span v-if="microphonePermission === 'denied'">Micro</span>
-          <span v-if="cameraPermission === 'denied'">Camera</span>
+          <span class="ml-2" v-if="cameraPermission === 'denied'">Camera</span>
         </div>
+
+        <p
+            v-if="[microphonePermission, cameraPermission].every(x => x === 'denied')"
+            class="mt-4 text-white text-xs"
+        >Bạn cần cho phép Camera hoặc Micro để bắt đầu</p>
 
         <div v-else class="mt-4">
           <div

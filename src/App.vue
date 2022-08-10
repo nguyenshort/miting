@@ -1,47 +1,47 @@
 <template>
-  <div v-if="roomStore.roomStatus === RoomStatus.JOINED" class="h-screen bg-slate-900 flex flex-col">
+  <div class="h-screen bg-white dark:bg-slate-900 max-w-[1100px] mx-auto border-x border-gray-100 text-slate-500">
 
-    <matrix-room />
-    <bottom-bar />
+    <div class="flex items-center h-[60px] border-b border-gray-100">
+
+      <div class="w-[100px] flex justify-center items-center border-r h-full border-gray-100 flex-shrink-0">
+        <div class="px-2 py-1 bg-green-500 text-white text-[18px] rounded-md">
+          <IonVideocam />
+        </div>
+      </div>
+
+      <div class="w-full h-full px-4 flex items-center justify-between">
+        <h1 class="text-[16px] text-slate-500 font-medium">
+          {{ mainStore.chanel }}
+        </h1>
+
+        <div class="bg-gray-100 px-2 py-1 rounded-md flex items-center">
+
+          <span class="w-5 h-5 bg-rose-500 rounded-full flex justify-center items-center">
+
+            <span class="w-2 h-2 bg-white"></span>
+
+          </span>
+
+          <span class="text-sm ml-1">
+            01:28:24
+          </span>
+
+        </div>
+
+      </div>
+
+    </div>
+    <suspense>
+      <router-view />
+    </suspense>
   </div>
-
-  <join-confirm v-else-if="roomStore.roomStatus === RoomStatus.WAITING" />
-
-  <kick-out v-else-if="roomStore.roomStatus === RoomStatus.BANNED" ></kick-out>
-
 </template>
 
 <script lang="ts" setup>
-import BottomBar from "./components/controllers/BottomBar.vue"
-import MatrixRoom from "./components/MatrixRoom.vue"
-import {useAgora} from "./composables/useAgora";
-import {nextTick, onMounted, provide} from "vue"
-import {useRoomStore, RoomStatus} from "./stores/room";
-import JoinConfirm from "./components/controllers/JoinConfirm.vue";
-import {getDatabase, onValue} from "firebase/database";
-import {ref as dbRef} from "@firebase/database";
-import KickOut from "./components/controllers/KickOut.vue";
+import IonVideocam from '~icons/ion/videocam'
+import {useMainStore} from "./stores/main";
 
-const roomStore = useRoomStore()
-
-const agora = useAgora()
-
-provide('ROOM_PROVIDER', agora)
-
-
-onMounted(() => nextTick(() => {
-
-  const db = getDatabase();
-  const starCountRef = dbRef(db, 'room/smileeye');
-  onValue(starCountRef, (snapshot) => {
-    const data = snapshot.val()
-
-    roomStore.setConfig({ count: data?.count || 0, chatDisable: data?.chatDisable || false })
-
-  });
-
-}))
-
+const mainStore = useMainStore()
 </script>
 
 <style></style>
