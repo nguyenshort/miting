@@ -31,7 +31,7 @@
       />
     </div>
 
-    <div v-if="false">
+    <div>
       <audio-streamer
           v-for="user in mainStore.users"
           :key="user.uid"
