@@ -47,17 +47,16 @@
 import {computed, nextTick, onMounted, ref} from "vue"
 import {useMainStore} from "../stores/main";
 import {useElementSize} from "@vueuse/core";
-import agora from 'agora-rtc-sdk-ng'
 
 const mainStore = useMainStore()
 
 const initAgora = async () => {
-  mainStore.client = agora.createClient({
+  mainStore.client = window.AgoraRTC.createClient({
     codec: 'h264',
     mode: 'rtc'
   })
 
-  const [audio, camera] = await agora.createMicrophoneAndCameraTracks()
+  const [audio, camera] = await window.AgoraRTC.createMicrophoneAndCameraTracks()
   mainStore.localTracks.audioTrack = audio
   mainStore.localTracks.videoTrack = camera
 
