@@ -95,9 +95,11 @@ onMounted(() => nextTick(() => {
   const db = getDatabase();
   const usersRef = dbRef(db, `room/${mainStore.chanel}/users`)
   onValue(usersRef, (snapshot) => {
-    const data = snapshot.val()
+    if(snapshot.exists()) {
+      const data = snapshot.val()
 
-    mainStore.setUsersRemote(JSON.parse(JSON.stringify(data)))
+      mainStore.setUsersRemote(JSON.parse(JSON.stringify(data)))
+    }
 
   })
 }))
@@ -125,9 +127,11 @@ onMounted(() => nextTick(() => {
   const db = getDatabase();
   const usersRef = dbRef(db, `room/${mainStore.chanel}/media`)
   onValue(usersRef, (snapshot) => {
-    const data = snapshot.val()
 
-    mainStore.usersMedia = JSON.parse(JSON.stringify(data))
+    if(snapshot.exists()) {
+      const data = snapshot.val()
+      mainStore.usersMedia = JSON.parse(JSON.stringify(data))
+    }
 
   })
 }))
