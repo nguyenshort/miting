@@ -28,6 +28,7 @@ module.exports = {
   },
   plugins: [
     require('@tailwindcss/aspect-ratio'),
-    require('tailwind-scrollbar-hide') // add this to your plugins
+    require('tailwind-scrollbar-hide') ,// add this to your plugins,
+    require('@tailwindcss/line-clamp'),
   ],
 }

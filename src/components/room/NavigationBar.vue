@@ -1,75 +1,109 @@
 <template>
-  <div class="h-[70px] flex-shrink-0">
 
-    <div class="h-full relative flex justify-center items-center">
-      <button
-          class="bg-gray-100 px-2.5 py-1.5 rounded-lg flex items-center text-slate-500 absolute top-1/2 left-0 transform -translate-y-1/2"
-      >
-        <heroicons-solid-volume-up class="text-[14px]" />
+  <div class="flex w-full">
+    <div class="w-full">
+      <div class="h-[70px] flex-shrink-0 px-5 overflow-x-hidden">
 
-        <div class="ml-2 h-1.5 w-[70px] bg-gray-200 rounded-full">
-          <div class="w-[45px] h-1.5 rounded-full bg-green-500"></div>
+        <div class="h-full relative flex justify-center items-center">
+          <button
+              class="bg-gray-100 px-2.5 py-1.5 rounded-lg flex items-center text-slate-500 absolute top-1/2 left-0 transform -translate-y-1/2"
+          >
+            <heroicons-solid-volume-up class="text-[14px]" />
+
+            <div class="ml-2 h-1.5 w-[70px] bg-gray-200 rounded-full">
+              <div class="w-[45px] h-1.5 rounded-full bg-green-500"></div>
+            </div>
+
+          </button>
+
+          <button
+              class="px-3 py-1.5 text-[13px] font-medium uppercase rounded-lg flex items-center text-white absolute top-1/2 right-0 transform -translate-y-1/2 transition disabled:opacity-50"
+              :class="{
+                'bg-rose-500': mainStore.inRoom,
+                'bg-primary-500': !mainStore.inRoom,
+              }"
+              :disabled="isLoading || !canJoin"
+              @click="clickToggle"
+          >
+            <tabler-record-mail class="text-[20px]" />
+            <span class="ml-1">{{ mainStore.inRoom ? 'Leave' : 'Join' }}</span>
+          </button>
+
+
+          <div id="navigation-actions" class="flex items-center">
+
+            <navigation-button
+                :active="!userMedia.audio"
+                @click="toggleAudio"
+            >
+              <material-symbols-mic-rounded v-if="userMedia.audio" />
+              <material-symbols-mic-off-rounded v-else />
+            </navigation-button>
+
+            <navigation-button
+                :active="!userMedia.video"
+                @click="toggleVideo"
+            >
+              <ph-video-camera-fill v-if="userMedia.video" />
+              <ph-video-camera-slash-fill v-else />
+            </navigation-button>
+
+            <button
+                v-if="mainStore.inRoom"
+                class="w-[32px] h-[32px] bg-gray-100 flex items-center justify-center text-gray-500 rounded-lg"
+            >
+              <ic-round-screen-share />
+            </button>
+
+            <button
+                v-if="mainStore.inRoom"
+                class="w-[32px] h-[32px] bg-gray-100 flex items-center justify-center text-gray-500 rounded-lg"
+            >
+              <mdi-credit-card-multiple />
+            </button>
+
+            <navigation-button>
+              <tabler-share />
+            </navigation-button>
+
+          </div>
+
         </div>
 
-      </button>
-
-      <button
-          class="px-3 py-1.5 text-[13px] font-medium uppercase rounded-lg flex items-center text-white absolute top-1/2 right-0 transform -translate-y-1/2"
-          :class="{
-              'bg-rose-500': mainStore.inRoom,
-              'bg-primary-500': !mainStore.inRoom,
-          }"
-          @click="clickToggle"
-      >
-        <tabler-record-mail class="text-[20px]" />
-        <span class="ml-1">{{ mainStore.inRoom ? 'Leave' : 'Join' }}</span>
-      </button>
-
-
-      <div id="navigation-actions" class="flex items-center">
-
-        <navigation-button
-            :active="!userMedia.audio"
-            @click="toggleAudio"
-        >
-          <material-symbols-mic-rounded v-if="userMedia.audio" />
-          <material-symbols-mic-off-rounded v-else />
-        </navigation-button>
-
-        <navigation-button
-            :active="!userMedia.video"
-            @click="toggleVideo"
-        >
-          <ph-video-camera-fill v-if="userMedia.video" />
-          <ph-video-camera-slash-fill v-else />
-        </navigation-button>
-
-        <button
-            v-if="mainStore.inRoom"
-            class="w-[32px] h-[32px] bg-gray-100 flex items-center justify-center text-gray-500 rounded-lg"
-        >
-          <ic-round-screen-share />
-        </button>
-
-        <button
-            v-if="mainStore.inRoom"
-            class="w-[32px] h-[32px] bg-gray-100 flex items-center justify-center text-gray-500 rounded-lg"
-        >
-          <mdi-credit-card-multiple />
-        </button>
-
-        <navigation-button>
-          <tabler-share />
-        </navigation-button>
-
       </div>
+    </div>
 
+    <div id="navi-tools-actions" class="w-[300px] flex-shrink-0 flex items-center justify-end px-5">
+      <navigation-button
+          @click="mainStore.currentTab = 'users'"
+          :active="mainStore.currentTab === 'users'"
+          :disabled="!mainStore.inRoom"
+      >
+        <fa6-solid-users-viewfinder />
+      </navigation-button>
+      <navigation-button
+          @click="mainStore.currentTab = 'chat'"
+          :active="mainStore.currentTab === 'chat'"
+          :disabled="!mainStore.inRoom"
+      >
+        <ph-messenger-logo-fill />
+      </navigation-button>
+      <navigation-button
+          @click="mainStore.currentTab = 'settings'"
+          :active="mainStore.currentTab === 'settings'"
+          :disabled="!mainStore.inRoom"
+      >
+        <foundation-info />
+      </navigation-button>
     </div>
 
   </div>
 </template>
 
 <script lang="ts" setup>
+import FoundationInfo from '~icons/foundation/info'
+import PhMessengerLogoFill from '~icons/ph/messenger-logo-fill'
+import Fa6SolidUsersViewfinder from '~icons/fa6-solid/users-viewfinder'
 import TablerRecordMail from '~icons/tabler/record-mail'
 import MaterialSymbolsMicRounded from '~icons/material-symbols/mic-rounded'
 import HeroiconsSolidVolumeUp from '~icons/heroicons-solid/volume-up'
@@ -80,13 +114,11 @@ import IcRoundScreenShare from '~icons/ic/round-screen-share'
 import TablerShare from '~icons/tabler/share'
 import MdiCreditCardMultiple from '~icons/mdi/credit-card-multiple'
 import {useMainStore} from "../../stores/main";
-import {computed, ref, toRaw} from "vue";
+import {computed, nextTick, onMounted, ref, toRaw} from "vue";
 import {usePermission} from "@vueuse/core";
 import {IAgoraRTCRemoteUser, ILocalTrack} from "agora-rtc-sdk-ng";
 import {getDatabase, onValue, set} from "firebase/database";
-import {ref as dbRef} from "@firebase/database";
-import {RoomStatus} from "../../stores/room";
-import {v4 as uuidv4} from "uuid";
+import {ref as dbRef, remove} from "@firebase/database"
 
 // Phân quyền
 const micPer = usePermission('microphone')
@@ -120,10 +152,46 @@ const enableEventListener = () => {
   if(!mainStore.client) {
     return
   }
+
+  mainStore.client.setLowStreamParameter({
+    width: 160,
+    height: 120,
+    framerate: 15,
+    bitrate: 120,
+  });
+
+  mainStore.client.enableDualStream()
+
+  mainStore.client.enableAudioVolumeIndicator()
+
   mainStore.client.on("user-published", async (user: IAgoraRTCRemoteUser, mediaType: "audio" | "video") => {
     await toRaw(mainStore.client)!.subscribe(user, mediaType)
     await mainStore.upsertUser(user, mediaType)
   })
+
+  mainStore.client.on("user-unpublished", async (user: IAgoraRTCRemoteUser, mediaType: "audio" | "video") => {
+    console.log('user-unpublished', user, mediaType)
+    await mainStore.upsertUser(user, mediaType)
+  })
+
+  mainStore.client.on("volume-indicator", (volumes: any) => {
+    volumes.forEach((volume: any) => {
+      mainStore.upsertVolume(volume)
+    })
+  })
+
+  mainStore.client.on('user-left',(user: IAgoraRTCRemoteUser) => {
+    mainStore.users = mainStore.users.filter(x => x.uid !== user.uid)
+  })
+
+}
+
+const onLeave = async () => {
+  const db = getDatabase();
+  await Promise.all([
+    remove(dbRef(db, `room/${mainStore.chanel}/media/${mainStore.currentUser?.id}`)),
+    remove(dbRef(db, `room/${mainStore.chanel}/users/${mainStore.currentUser?.id}`))
+  ])
 }
 
 const joinRoom = async () => {
@@ -153,17 +221,42 @@ const joinRoom = async () => {
 
 const clickToggle = async () => {
   if(mainStore.inRoom) {
-    // await mainStore.client?.leave()
-    // mainStore.roomStatus = 'leave'
+    await mainStore.client?.leave()
+    mainStore.roomStatus = 'leave'
+    await onLeave()
   } else {
     await joinRoom()
   }
 }
+
+onMounted(() => nextTick(() => {
+  window.addEventListener('beforeunload', async () => {
+    if(mainStore.inRoom) {
+      await onLeave()
+    }
+  })
+}))
 
 </script>
 
 <style scoped>
 #navigation-actions > button + button {
   margin-left: 15px;
+}
+
+#navi-tools-actions > button + button {
+  margin-left: 15px;
+}
+
+#navi-tools-actions > button:hover {
+  background: #3b66f5;
+}
+
+#navi-tools-actions > button._action {
+  @apply bg-primary-600 hover:shadow-primary-300
+}
+
+#navi-tools-actions > button._action:hover {
+  @apply bg-primary-600 hover:shadow-primary-300
 }
 </style>

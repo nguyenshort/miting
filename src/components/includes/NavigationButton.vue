@@ -1,9 +1,9 @@
 <template>
   <button
-      class="aspect-1 overflow-hidden flex items-center justify-center rounded-lg transition transform"
+      class="aspect-1 overflow-hidden flex items-center justify-center hover:shadow hover:bg-primary-500 hover:shadow-primary-300 rounded-lg transition transform disabled:opacity-50 disabled:pointer-events-none"
       :class="{
-          'scale-105 bg-red-500 text-white hover:shadow hover:shadow-rose-300': active,
-          'bg-gray-100 text-gray-500 hover:bg-red-500 hover:text-white': !active,
+          'scale-105 bg-primary-500 text-white _action': active,
+          'bg-gray-100 text-gray-500 hover:text-white': !active,
       }"
   >
     <slot></slot>

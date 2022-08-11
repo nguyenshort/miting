@@ -25,6 +25,7 @@ declare module '@vue/runtime-core' {
     NavigationButton: typeof import('./src/components/includes/NavigationButton.vue')['default']
     RoomContainer: typeof import('./src/components/room/RoomContainer.vue')['default']
     RoomPreview: typeof import('./src/components/room/RoomPreview.vue')['default']
+    RoomSetting: typeof import('./src/components/room/RoomSetting.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
     SidebarItem: typeof import('./src/components/room/SidebarItem.vue')['default']

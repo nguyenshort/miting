@@ -3,13 +3,25 @@ import {
     IAgoraRTCClient,
     IAgoraRTCRemoteUser,
     ICameraVideoTrack,
-    IMicrophoneAudioTrack
+    IMicrophoneAudioTrack, UID
 } from "agora-rtc-sdk-ng";
 
 export interface ISmileeyeUser {
     id: string|number
     name: string
     avatar: string
+}
+
+export interface IAgoraVolume {
+    level: number
+    uid: UID
+}
+
+type IRoomSettings = {
+    playMode: 'auto' | 'manual' | 'grids'
+    pinner: UID
+    minLevel: number
+    smallGrid: boolean
 }
 
 type State = {
@@ -23,6 +35,10 @@ type State = {
     users: Array<IAgoraRTCRemoteUser>
     usersRemote: Record<string|number, ISmileeyeUser>
     chanel: string
+    volumes: Array<IAgoraVolume>
+    currentTab: 'chat' | 'settings' | 'users' | ''
+    settings: IRoomSettings,
+    usersMedia: Record<string|number, {id: UID, audio: boolean, video: boolean}>
 }
 
 export const useMainStore = defineStore('main', {
@@ -41,13 +57,35 @@ export const useMainStore = defineStore('main', {
         },
         client: undefined,
         users: [],
-        usersRemote: {}
+        usersRemote: {},
+        volumes: [],
+        currentTab: '',
+        settings: {
+            playMode: 'grids',
+            pinner: '',
+            minLevel: 5,
+            smallGrid: true
+        },
+        usersMedia: {}
     }),
     // optional getters
     getters: {
         // Có user đang ghim
         auth: (state) => !!state.currentUser,
-        inRoom: (state) => state.roomStatus === 'join'
+        inRoom: (state) => state.roomStatus === 'join',
+        focused: (state) => {
+            let uid: UID|undefined
+            if(state.settings.pinner) {
+                uid = state.settings.pinner
+            } else {
+                uid = state.volumes.filter(v => v.level > state.settings.minLevel)?.[0]?.uid || state.currentUser?.id
+            }
+            if(state.users.findIndex(u => u.uid === uid) > -1) {
+                return uid
+            }
+            return state.currentUser?.id
+        },
+        talkers: (state): IAgoraVolume[] => state.volumes.filter(v => v.level > state.settings.minLevel)
     },
     // optional actions
     actions: {
@@ -72,6 +110,21 @@ export const useMainStore = defineStore('main', {
 
         setUsersRemote(users: Record<string|number, ISmileeyeUser>) {
             this.usersRemote = users
+        },
+
+        upsertVolume(volume: IAgoraVolume) {
+            const _index = this.volumes.findIndex(v => v.uid === volume.uid)
+            if (_index === -1) {
+                this.volumes.push(volume)
+            } else {
+                const _volume = Object.assign({}, this.volumes[_index])
+                _volume.level = volume.level
+                this.volumes[_index] = _volume
+            }
+        },
+
+        togglePinner(uid: UID) {
+            this.settings.pinner = this.settings.pinner === uid ? '' : uid
         }
     }
 })
