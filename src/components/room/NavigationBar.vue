@@ -22,7 +22,7 @@
                 'bg-rose-500': mainStore.inRoom,
                 'bg-primary-500': !mainStore.inRoom,
               }"
-              :disabled="isLoading || !canJoin"
+              :disabled="isLoading"
               @click="clickToggle"
           >
             <tabler-record-mail class="text-[20px]" />
