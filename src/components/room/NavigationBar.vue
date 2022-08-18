@@ -7,7 +7,7 @@
         <div class="h-full relative flex md:justify-center items-center">
 
           <button
-              class="hidden md:block bg-gray-100 px-2.5 py-1.5 rounded-lg flex items-center text-slate-500 absolute top-1/2 left-0 transform -translate-y-1/2"
+              class="hidden md:flex bg-gray-100 px-2.5 py-1.5 rounded-lg items-center text-slate-500 absolute top-1/2 left-0 transform -translate-y-1/2"
           >
             <heroicons-solid-volume-up class="text-[14px]" />
 
