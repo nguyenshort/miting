@@ -21,7 +21,6 @@
     "pinia": "^2.0.16",
     "tailwind-scrollbar-hide": "^1.1.7",
     "unplugin-icons": "^0.14.8",
-    "unplugin-vue-components": "^0.22.4",
     "uuid": "^8.3.2",
     "vant": "^3.5.2",
     "vue": "^3.2.37",
@@ -49,6 +48,7 @@
     "postcss": "^8.4.14",
     "tailwindcss": "^3.1.6",
     "typescript": "^4.6.4",
+    "unplugin-vue-components": "^0.22.4",
     "vite": "^3.0.0",
     "vue-tsc": "^0.38.4"
   }

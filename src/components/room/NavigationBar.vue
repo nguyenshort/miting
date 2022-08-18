@@ -4,9 +4,10 @@
     <div class="w-full">
       <div class="h-[70px] flex-shrink-0 px-5 overflow-x-hidden">
 
-        <div class="h-full relative flex justify-center items-center">
+        <div class="h-full relative flex md:justify-center items-center">
+
           <button
-              class="bg-gray-100 px-2.5 py-1.5 rounded-lg flex items-center text-slate-500 absolute top-1/2 left-0 transform -translate-y-1/2"
+              class="hidden md:block bg-gray-100 px-2.5 py-1.5 rounded-lg flex items-center text-slate-500 absolute top-1/2 left-0 transform -translate-y-1/2"
           >
             <heroicons-solid-volume-up class="text-[14px]" />
 
@@ -16,21 +17,8 @@
 
           </button>
 
-          <button
-              class="px-3 py-1.5 text-[13px] font-medium uppercase rounded-lg flex items-center text-white absolute top-1/2 right-0 transform -translate-y-1/2 transition disabled:opacity-50"
-              :class="{
-                'bg-rose-500': mainStore.inRoom,
-                'bg-primary-500': !mainStore.inRoom,
-              }"
-              :disabled="isLoading"
-              @click="clickToggle"
-          >
-            <tabler-record-mail class="text-[20px]" />
-            <span class="ml-1">{{ mainStore.inRoom ? 'Leave' : 'Join' }}</span>
-          </button>
 
-
-          <div id="navigation-actions" class="flex items-center">
+          <div id="navigation-actions" class="flex items-center md:justify-center w-full">
 
             <navigation-button
                 :active="!userMedia.audio"
@@ -50,20 +38,37 @@
 
             <button
                 v-if="mainStore.inRoom"
-                class="w-[32px] h-[32px] bg-gray-100 flex items-center justify-center text-gray-500 rounded-lg"
+                class="w-[32px] h-[32px] bg-gray-100 items-center justify-center text-gray-500 rounded-lg hidden md:flex"
             >
               <ic-round-screen-share />
             </button>
 
-            <button
-                v-if="mainStore.inRoom"
-                class="w-[32px] h-[32px] bg-gray-100 flex items-center justify-center text-gray-500 rounded-lg"
-            >
-              <mdi-credit-card-multiple />
-            </button>
-
             <navigation-button>
               <tabler-share />
+            </navigation-button>
+
+            <button
+                class="px-3 py-1.5 text-[13px] font-medium uppercase rounded-lg flex items-center text-white md:absolute md:top-1/2 md:right-0 md:transform md:-translate-y-1/2 md:transition disabled:opacity-50"
+                :class="{
+                'bg-rose-500': mainStore.inRoom,
+                'bg-primary-500': !mainStore.inRoom,
+              }"
+                :disabled="isLoading"
+                @click="clickToggle"
+            >
+              <tabler-record-mail class="text-[20px]" />
+              <span class="ml-1 hidden md:block">{{ mainStore.inRoom ? 'Leave' : 'Join' }}</span>
+            </button>
+
+            <navigation-button
+                class="md:hidden !ml-auto"
+                :class="{
+                  'open': openedShortcuts
+                }"
+                @click="openedShortcuts = !openedShortcuts"
+                :active="openedShortcuts"
+            >
+              <foundation-info />
             </navigation-button>
 
           </div>
@@ -73,7 +78,7 @@
       </div>
     </div>
 
-    <div id="navi-tools-actions" class="w-[300px] flex-shrink-0 flex items-center justify-end px-5">
+    <div id="navi-tools-actions" class="hidden md:flex w-[300px] flex-shrink-0 items-center justify-end px-5">
       <navigation-button
           @click="mainStore.currentTab = 'users'"
           :active="mainStore.currentTab === 'users'"
@@ -88,11 +93,7 @@
       >
         <ph-messenger-logo-fill />
       </navigation-button>
-      <navigation-button
-          @click="mainStore.currentTab = 'settings'"
-          :active="mainStore.currentTab === 'settings'"
-          :disabled="!mainStore.inRoom"
-      >
+      <navigation-button>
         <foundation-info />
       </navigation-button>
     </div>
@@ -160,7 +161,7 @@ const enableEventListener = () => {
     bitrate: 120,
   });
 
-  mainStore.client.enableDualStream()
+  // mainStore.client.enableDualStream()
 
   mainStore.client.enableAudioVolumeIndicator()
 
@@ -236,6 +237,8 @@ onMounted(() => nextTick(() => {
     }
   })
 }))
+
+const openedShortcuts = ref(false)
 
 </script>
 

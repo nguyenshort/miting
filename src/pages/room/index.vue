@@ -26,7 +26,7 @@
       </div>
       <div
           ref="sideBarRef"
-          class="w-[300px] flex-shrink-0"
+          class="hidden md:block w-[300px] flex-shrink-0"
       >
         <sidebar-view />
       </div>
@@ -140,8 +140,5 @@ onMounted(() => nextTick(() => {
 <style>
 #home {
   height: v-bind(heightContainer);
-}
-#dynamicList {
-  width: calc(100% - 300px);
 }
 </style>

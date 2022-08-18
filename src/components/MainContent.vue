@@ -59,7 +59,6 @@ const initAgora = async () => {
   const [audio, camera] = await window.AgoraRTC.createMicrophoneAndCameraTracks()
   mainStore.localTracks.audioTrack = audio
   mainStore.localTracks.videoTrack = camera
-
   // init camera
 }
 
