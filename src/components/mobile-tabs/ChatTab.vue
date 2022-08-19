@@ -81,7 +81,8 @@ onMounted(() => nextTick(() => {
 
 <style>
 #chat-list-mb {
-  height: calc(90vh - 120px);
+  max-height: calc(90vh - 120px);
+  height: auto;
 }
 </style>
 

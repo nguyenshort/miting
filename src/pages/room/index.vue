@@ -39,7 +39,7 @@
         closeable
         round
         position="bottom"
-        :style="{ height: '90%' }"
+        :style="{ maxHeight: '90%', height: 'auto' }"
         teleport="body"
     >
       <chat-tab />
