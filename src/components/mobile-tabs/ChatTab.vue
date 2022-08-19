@@ -29,7 +29,7 @@
 
       </div>
     </div>
-    <div class="relative mt-5">
+    <div class="relative mt-4 mb-5">
       <van-button round type="success" size="small" block @click="mainStore.mobileTab.formChat = true">
         Add Message
       </van-button>
@@ -81,7 +81,7 @@ onMounted(() => nextTick(() => {
 
 <style>
 #chat-list-mb {
-  max-height: calc(90vh - 120px);
+  max-height: calc(90vh - 130px);
   height: auto;
 }
 </style>
