@@ -88,7 +88,7 @@ interface IMessage {
 const messages = ref<Record<string, IMessage>>({})
 
 const messagesSorted = computed(() => {
-  return Object.values(messages.value).sort((a, b) => {
+  return Object.values(messages.value || {}).sort((a, b) => {
     return a.createdAt - b.createdAt
   })
 })

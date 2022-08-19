@@ -2,7 +2,7 @@
 
   <div class="flex w-full">
     <div class="w-full">
-      <div class="h-[70px] flex-shrink-0 px-5 overflow-x-hidden">
+      <div class="h-[70px] flex-shrink-0 px-5">
 
         <div class="h-full relative flex md:justify-center items-center">
 
@@ -60,16 +60,50 @@
               <span class="ml-1 hidden md:block">{{ mainStore.inRoom ? 'Leave' : 'Join' }}</span>
             </button>
 
-            <navigation-button
-                class="md:hidden !ml-auto"
+            <div
+                id="mb-shortcuts"
+                class="md:hidden !ml-auto relative z-30"
                 :class="{
                   'open': openedShortcuts
                 }"
-                @click="openedShortcuts = !openedShortcuts"
-                :active="openedShortcuts"
+                ref="smartShortcutRef"
             >
-              <foundation-info />
-            </navigation-button>
+              <navigation-button
+                  class="relative z-20"
+                  @click="openedShortcuts = !openedShortcuts"
+                  :class="{
+                    '!bg-rose-500 !text-white': openedShortcuts
+                  }"
+                  :active="openedShortcuts"
+              >
+                <material-symbols-close-rounded v-if="openedShortcuts" />
+                <foundation-info v-else />
+              </navigation-button>
+
+              <navigation-button
+                  class="absolute z-10 top-0 left-0 smart"
+                  @click="clickMobileTab('users')"
+              >
+                <fa6-solid-users-viewfinder />
+              </navigation-button>
+
+              <navigation-button
+                  class="absolute z-10 top-0 left-0 smart"
+                  :disabled="!mainStore.inRoom"
+                  @click="clickMobileTab('chat')"
+              >
+                <ph-messenger-logo-fill />
+              </navigation-button>
+
+              <navigation-button
+                  class="absolute z-10 top-0 left-0 smart"
+                  :disabled="!mainStore.inRoom"
+                  @click="clickMobileTab('settings')"
+              >
+                <material-symbols-settings-suggest />
+              </navigation-button>
+
+            </div>
 
           </div>
 
@@ -93,15 +127,15 @@
       >
         <ph-messenger-logo-fill />
       </navigation-button>
-      <navigation-button>
-        <foundation-info />
-      </navigation-button>
+
     </div>
 
   </div>
 </template>
 
 <script lang="ts" setup>
+import MaterialSymbolsCloseRounded from '~icons/material-symbols/close-rounded'
+import MaterialSymbolsSettingsSuggest from '~icons/material-symbols/settings-suggest'
 import FoundationInfo from '~icons/foundation/info'
 import PhMessengerLogoFill from '~icons/ph/messenger-logo-fill'
 import Fa6SolidUsersViewfinder from '~icons/fa6-solid/users-viewfinder'
@@ -113,10 +147,9 @@ import PhVideoCameraFill from '~icons/ph/video-camera-fill'
 import PhVideoCameraSlashFill from '~icons/ph/video-camera-slash-fill'
 import IcRoundScreenShare from '~icons/ic/round-screen-share'
 import TablerShare from '~icons/tabler/share'
-import MdiCreditCardMultiple from '~icons/mdi/credit-card-multiple'
 import {useMainStore} from "../../stores/main";
 import {computed, nextTick, onMounted, ref, toRaw} from "vue";
-import {usePermission} from "@vueuse/core";
+import {usePermission, onClickOutside} from "@vueuse/core";
 import {IAgoraRTCRemoteUser, ILocalTrack} from "agora-rtc-sdk-ng";
 import {getDatabase, onValue, set} from "firebase/database";
 import {ref as dbRef, remove} from "@firebase/database"
@@ -240,6 +273,16 @@ onMounted(() => nextTick(() => {
 
 const openedShortcuts = ref(false)
 
+const smartShortcutRef = ref<HTMLDivElement>()
+onClickOutside(smartShortcutRef, () => openedShortcuts.value = false)
+
+const clickMobileTab = (tab: 'chat' | 'settings' | 'users') => {
+  openedShortcuts.value = false
+  Object.entries( mainStore.mobileTab).forEach(([key]) => {
+    mainStore.mobileTab[(key as 'chat' | 'settings' | 'users')] = key === tab
+  })
+}
+
 </script>
 
 <style scoped>
@@ -262,4 +305,27 @@ const openedShortcuts = ref(false)
 #navi-tools-actions > button._action:hover {
   @apply bg-primary-600 hover:shadow-primary-300
 }
+
+#mb-shortcuts > button + button {
+  opacity: 0;
+  visibility: hidden;
+}
+
+#mb-shortcuts.open > button + button {
+  opacity: 1;
+  visibility: visible;
+}
+
+#mb-shortcuts.open > button:nth-child(2) {
+  transform: translateY(-50px);
+}
+
+#mb-shortcuts.open > button:nth-child(3) {
+  transform: translateY(-100px);
+}
+
+#mb-shortcuts.open > button:nth-child(4) {
+  transform: translateY(-150px);
+}
+
 </style>

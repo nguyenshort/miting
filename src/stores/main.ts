@@ -39,6 +39,12 @@ type State = {
     currentTab: 'chat' | 'settings' | 'users' | ''
     settings: IRoomSettings,
     usersMedia: Record<string|number, {id: UID, audio: boolean, video: boolean}>
+    mobileTab: {
+        chat: boolean
+        settings: boolean
+        users: boolean
+        formChat: boolean
+    }
 }
 
 export const useMainStore = defineStore('main', {
@@ -66,7 +72,13 @@ export const useMainStore = defineStore('main', {
             minLevel: 5,
             smallGrid: true
         },
-        usersMedia: {}
+        usersMedia: {},
+        mobileTab: {
+            chat: false,
+            settings: false,
+            users: false,
+            formChat: false
+        }
     }),
     // optional getters
     getters: {
@@ -125,6 +137,10 @@ export const useMainStore = defineStore('main', {
 
         togglePinner(uid: UID) {
             this.settings.pinner = this.settings.pinner === uid ? '' : uid
+        },
+
+        setMobileTab(tab: any) {
+            this.mobileTab = tab
         }
     }
 })
